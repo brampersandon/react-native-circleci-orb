@@ -25,7 +25,7 @@ steps:
               - yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json" }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
   - run:
       name: Yarn Install
-      command: "yarn install --immutable --immutable-cache"
+      command: "yarn install"
   - when:
       condition: <<parameters.cache>>
       steps:
