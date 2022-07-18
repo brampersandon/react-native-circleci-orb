@@ -1,6 +1,10 @@
 description: Install Javascript dependencies using Yarn. This command correctly configures the cache for any number of package.json and yarn.lock files.
 
 parameters:
+  cache:
+    description: Save and restore the build cache? Defaults to true
+    type: boolean
+    default: true
   yarn_install_directory:
     description: The working directory to run install at. Defaults to yarn's current working directory
     type: string
