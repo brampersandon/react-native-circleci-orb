@@ -4,4 +4,4 @@ description: |
   Orb for building and testing React Native projects.
 
 display:
-  source_url: "https://github.com/react-native-community/react-native-circleci-orb"
+  source_url: "https://github.com/skylineproject/react-native-circleci-orb"
