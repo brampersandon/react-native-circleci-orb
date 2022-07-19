@@ -65,6 +65,10 @@ steps:
   #       touch .watchmanconfig
   #       node -v
 
+  - run:
+      name: Install Cocoapods
+      command: brew upgrade cocoapods@1.11.3
+
   - when:
       condition: <<parameters.homebrew_cache>>
       steps:
