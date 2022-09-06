@@ -90,6 +90,8 @@ parameters:
   no_output_timeout:
     type: string
     default: 15m
+  post_build_command:
+    type: string
 
 executor:
   name: macos
@@ -151,3 +153,9 @@ steps:
             scheme: <<parameters.scheme>>
             project_type: <<parameters.project_type>>
             cache: <<parameters.xcodebuild_cache>>
+  - when:
+      condition: <<parameters.post_build_command>>
+      steps: 
+        - run: 
+            name: Post-build command
+            command: <<parameters.post_build_command>>
