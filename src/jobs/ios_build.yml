@@ -30,10 +30,6 @@ parameters:
     description: Should we cache after yarn install? Defaults to true
     type: boolean
     default: true
-  yarn_cache_folder:
-    description: The path to the yarn cache folder
-    type: string
-    default: "/tmp/yarn"
   # For the iOS build command
   project_type:
     description: If the iOS app is built using a project file (*.xcodeproj) or a workspace.
@@ -87,6 +83,13 @@ parameters:
     description: Changes the resource class of the executor. Requires a support request to enable the resource_class parameter. See https://circleci.com/docs/2.0/configuration-reference/#resource_class
     type: string
     default: medium
+  run_xcuitests:
+    description: Configures whether we should run a build or an XCUITest
+    type: boolean
+    default: false
+  no_output_timeout:
+    type: string
+    default: 15m
 
 executor:
   name: macos
@@ -109,7 +112,6 @@ steps:
       homebrew_update: <<parameters.homebrew_update>>
   - yarn_install:
       cache: <<parameters.yarn_cache>>
-      cache_folder: <<parameters.yarn_cache_folder>>
   - when:
       condition: <<parameters.on_after_initialize>>
       steps:
@@ -126,11 +128,26 @@ steps:
         - pod_install:
             pod_install_directory: <<parameters.pod_install_directory>>
             cache: <<parameters.pod_cache>>
-  - ios_build:
-      project_path: <<parameters.project_path>>
-      derived_data_path: <<parameters.derived_data_path>>
-      device: <<parameters.device>>
-      build_configuration: <<parameters.build_configuration>>
-      scheme: <<parameters.scheme>>
-      project_type: <<parameters.project_type>>
-      cache: <<parameters.xcodebuild_cache>>
+  - when:
+      condition: <<parameters.run_xcuitests>>
+      steps: 
+        - ios_xcuitest:
+            project_path: <<parameters.project_path>>
+            derived_data_path: <<parameters.derived_data_path>>
+            device: <<parameters.device>>
+            build_configuration: <<parameters.build_configuration>>
+            scheme: <<parameters.scheme>>
+            project_type: <<parameters.project_type>>
+            cache: <<parameters.xcodebuild_cache>>
+            no_output_timeout: <<parameters.no_output_timeout>>
+  - unless:
+      condition: <<parameters.run_xcuitests>>
+      steps: 
+        - ios_build:
+            project_path: <<parameters.project_path>>
+            derived_data_path: <<parameters.derived_data_path>>
+            device: <<parameters.device>>
+            build_configuration: <<parameters.build_configuration>>
+            scheme: <<parameters.scheme>>
+            project_type: <<parameters.project_type>>
+            cache: <<parameters.xcodebuild_cache>>
